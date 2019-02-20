@@ -1,4 +1,4 @@
-class Abstract_reformatted(object):
+class Abstract(object):
 
     def __init_(self, title, content, authors, track):
         self.title = title
