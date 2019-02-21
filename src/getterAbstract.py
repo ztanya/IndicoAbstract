@@ -2,7 +2,8 @@ import AbstractClass
 from PersonClass import Person
 import csv
 
-class getterAbstract_reformatted(object):
+
+class getterAbstract(object):
 
     def getAbstract(root, i):
         global primaryAuthor
@@ -23,7 +24,7 @@ class getterAbstract_reformatted(object):
 
         child_count = 0
 
-        abstract = AbstractClass.Abstract_reformatted()
+        abstract = AbstractClass.Abstract()
 
         def bringAffilToTheSame(input_affilation, key_list):
             input_affilation = input_affilation.strip().rstrip()
@@ -54,14 +55,14 @@ class getterAbstract_reformatted(object):
                     # приведение разных affiliations к одному стандарту
                     affiliation = bringAffilToTheSame(str(root[i][j][3].text), match_affils)
                     primaryAuthor = Person(str(root[i][j][0].text), str(root[i][j][1].text),str(root[i][j][2].text),
-                                               affiliation)
+                                               affiliation, True)
                     authors.append(primaryAuthor)
 
                 if root[i][j].tag == "Co-Author":
                     # приведение разных affilations к одному стандарту
                     affiliation = bringAffilToTheSame(str(root[i][j][3].text), match_affils)
                     coAuthor = Person(str(root[i][j][0].text), str(root[i][j][1].text), str(root[i][j][2].text),
-                                           affiliation)
+                                           affiliation, False)
                     authors.append(coAuthor)
 
                 if root[i][j].tag == "Track" and not flag:
@@ -70,7 +71,8 @@ class getterAbstract_reformatted(object):
 
 
                 """if root[i][j].tag == "Speaker":
-                    speaker = repr(root[i][j][0].text) + repr(root[i][j][1].text) + repr(root[i][j][2].text) + repr(root[i][j][3].text)
+                    speaker = repr(root[i][j][0].text) + repr(root[i][j][1].text) + repr(root[i][j][2].text)
+                    + repr(root[i][j][3].text)
 
                 if root[i][j].tag == "ContributionType":
                     contributionType = root[i][j].text"""

@@ -22,7 +22,9 @@ from collections import defaultdict
 
 if __name__ == "__main__":
 
-    tree_conference = ET.parse("conference_info.xml")
+    conferenceInfoXml_filename = "conference_info_boa.xml"
+
+    tree_conference = ET.parse(conferenceInfoXml_filename)
     root_conference = tree_conference.getroot()
     getter_conference = getterConference.getterConference
 
@@ -53,17 +55,19 @@ if __name__ == "__main__":
                'desc_ru': desc_ru}
 
     doc.render(context)
-    doc.save("generated_doc.docx")
+    doc.save("generated_doc_boa.docx")
 
-    document = Document("generated_doc.docx")
+    document = Document("generated_doc_boa.docx")
     styles = document.styles
     count = 0
 
-    tree_abstracts = ET.parse("Abstracts.xml")
+    abstractsXml_filename = "Abstracts_boa.xml"
+
+    tree_abstracts = ET.parse(abstractsXml_filename)
     root_abstracts = tree_abstracts.getroot()
-    doc_abstracts = lxml.etree.parse("Abstracts.xml")
+    doc_abstracts = lxml.etree.parse(abstractsXml_filename)
     count_abstracts = doc_abstracts.xpath('count(//abstract)')
-    getter_abstract = getterAbstract.getterAbstract_reformatted
+    getter_abstract = getterAbstract.getterAbstract
 
     abstracts = []
 
@@ -134,9 +138,10 @@ if __name__ == "__main__":
                             aff_index = index+1
                             break
                     p.add_run(str(aff_index) + ",").font.superscript = True
-                if all_authors[i].email != "":
-                    p.add_run(string.ascii_lowercase[email_index]).font.superscript = True
-                    email_index += 1
+                if all_authors[i].isPrimaryAuthor == True:
+                    if all_authors[i].email != "":
+                        p.add_run(string.ascii_lowercase[email_index]).font.superscript = True
+                        email_index += 1
 
             # пишем affiliations
             aff_index = -1
@@ -157,16 +162,20 @@ if __name__ == "__main__":
 
 
             # пишем e-mail
+            count_primaryAuthors = 0
             p = document.add_paragraph(style=styles["GRID_email"])
             p.add_run("E-mail: ")
             email_index = 0  # буква для email
             for i in range(0, len(all_authors)):
-                if all_authors[i].email != "":
-                    if i > 0:
-                        p.add_run(", ")
-                    p.add_run(string.ascii_lowercase[email_index]).font.superscript = True
-                    email_index += 1
-                    p.add_run(all_authors[i].email)
+                if all_authors[i].isPrimaryAuthor == True:
+                    if all_authors[i].email != "":
+                        if count_primaryAuthors > 0:
+                            if i > 0:
+                                p.add_run(", ")
+                        p.add_run(string.ascii_lowercase[email_index]).font.superscript = True
+                        email_index += 1
+                        p.add_run(all_authors[i].email)
+                        count_primaryAuthors += 1
 
             # else:
             #     for person in all_authors:
@@ -185,5 +194,5 @@ if __name__ == "__main__":
 
             document.add_page_break()
 
-document.save("generated_final.docx")
-print("Документ успешно сгенерирован (generated_final.docx)")
+document.save("generated_final_boa.docx")
+print("Документ успешно сгенерирован (generated_final_boa.docx)")
