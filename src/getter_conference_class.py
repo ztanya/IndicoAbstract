@@ -1,7 +1,7 @@
 import conference_class
 
 
-class GetterConference(object):
+class GetterConference:
 
     @staticmethod
     def get_conference(root):

@@ -1,10 +1,20 @@
-class Conference(object):
+class Conference:
 
-    def __init__(self, name_en, name_ru, add_info_en, add_info_ru, number, year, date_en, date_ru, desc_en, desc_ru):
+    def __init__(self,
+                 name_en,
+                 name_ru,
+                 add_info_en,
+                 add_info_ru,
+                 number,
+                 year,
+                 date_en,
+                 date_ru,
+                 desc_en,
+                 desc_ru):
         self.name_en = name_en
         self.name_ru = name_ru
-        self.addInfo_en = add_info_en
-        self.addInfo_ru = add_info_ru
+        self.add_info_en = add_info_en
+        self.add_info_ru = add_info_ru
         self.number = number
         self.year = year
         self.date_en = date_en

@@ -1,4 +1,4 @@
-class Abstract(object):
+class Abstract:
 
     def __init__(self, title, content, authors, track):
         self.title = title

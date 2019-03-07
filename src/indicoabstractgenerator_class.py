@@ -15,9 +15,6 @@ class IndicoAbstractGenerator:
 
     def generate_doc(conferenceinfo_xmlfilename, abstracts_xmlfilename,
                      doctpl_filename, finaldocument_filename):
-        global tree_conference
-        global root_conference
-        global getter_conference
 
         tree_conference = ET.parse(conferenceinfo_xmlfilename)
         root_conference = tree_conference.getroot()
@@ -25,8 +22,8 @@ class IndicoAbstractGenerator:
 
         name_en = getter_conference.get_conference(root_conference).name_en
         name_ru = getter_conference.get_conference(root_conference).name_ru
-        add_info_en = getter_conference.get_conference(root_conference).addInfo_en
-        add_info_ru = getter_conference.get_conference(root_conference).addInfo_ru
+        add_info_en = getter_conference.get_conference(root_conference).add_info_en
+        add_info_ru = getter_conference.get_conference(root_conference).add_info_ru
         conf_number = getter_conference.get_conference(root_conference).number
         roman_number = arabic_roman.arabic_roman(conf_number)
         year = getter_conference.get_conference(root_conference).year
@@ -41,6 +38,7 @@ class IndicoAbstractGenerator:
                    'name_en': name_en,
                    'name_ru': name_ru,
                    'add_info_en': add_info_en,
+                   'add_info_ru': add_info_ru,
                    'conf_number': conf_number,
                    'roman_number': roman_number,
                    'year': year,
@@ -85,7 +83,7 @@ class IndicoAbstractGenerator:
                     dict_abstracts_by_groups[track].append(abstract)
 
         def by_name_key(person):
-            return person.firstName.capitalize()
+            return person.first_name.capitalize()
 
         for section in dict_abstracts_by_groups.keys():
             if section != '':
@@ -119,15 +117,15 @@ class IndicoAbstractGenerator:
                     if i > 0:
                         new_paragraph.add_run(", ")
                     # имя + фамилия:
-                    new_paragraph.add_run(all_authors[i].firstName.capitalize() + "\xa0" +
-                                          all_authors[i].familyName.capitalize())
+                    new_paragraph.add_run(all_authors[i].first_name.capitalize() + "\xa0" +
+                                          all_authors[i].family_name.capitalize())
                     if len(all_affiliations_nonrepeat) > 1:
                         for index, elem in enumerate(all_affiliations_nonrepeat):
                             if all_authors[i].affiliation == elem:
                                 aff_index = index + 1
                                 break
                         new_paragraph.add_run(str(aff_index) + ",").font.superscript = True
-                    if all_authors[i].isPrimaryAuthor:
+                    if all_authors[i].is_primary_author:
                         if all_authors[i].email != "":
                             new_paragraph.add_run(
                                 string.ascii_lowercase[email_index]).font.superscript = True
@@ -159,7 +157,7 @@ class IndicoAbstractGenerator:
                 new_paragraph.add_run("E-mail: ")
                 email_index = 0  # буква для email
                 for i in range(0, len(all_authors)):
-                    if all_authors[i].isPrimaryAuthor:
+                    if all_authors[i].is_primary_author:
                         if all_authors[i].email != "":
                             if count_primary_authors > 0:
                                 if i > 0:

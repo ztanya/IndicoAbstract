@@ -1,40 +1,43 @@
+"""module for getting abstract from input xml file"""
 from __future__ import print_function
 import csv
 import abstract_class
 from person_class import Person
 
 
-def bring_affil_to_the_same(input_affilation, key_list):
-    input_affilation = input_affilation.strip().rstrip()
-    if input_affilation in key_list.keys():
-        new_affiliation = str(key_list.get(input_affilation))
+def bring_affiliations_to_the_same(input_affiliation, key_list):
+    """function to match current affiliations with affiliations from CSV file"""
+    input_affiliation = input_affiliation.strip().rstrip()
+    if input_affiliation in key_list.keys():
+        new_affiliation = str(key_list.get(input_affiliation))
         new_affiliation = new_affiliation.replace("['", "")
         new_affiliation = new_affiliation.replace("\\n']", "")
         print("Была заменена следующая организация: ")
-        print(input_affilation + " на " + new_affiliation + "\n")
+        print(input_affiliation + " на " + new_affiliation + "\n")
         return new_affiliation
-    else:
-        print("!!!Организации " + input_affilation + " нет в списке стандартов! "
-              + "Проверьте правильность написания." +
-              "В сгенерированном документе сохранен текущий вариант названия организации." + "\n")
-        return input_affilation
+    print("!!!Организации " + input_affiliation + " нет в списке стандартов! "
+          + "Проверьте правильность написания." +
+          "В сгенерированном документе сохранен текущий вариант названия организации." + "\n")
+    return input_affiliation
 
 
-class GetterAbstract(object):
+class GetterAbstract:
+    """class for getting abstract from input xml file and csv"""
 
     @staticmethod
     def get_abstract(root, i):
-        tracky = ""
+        """method for getting abstract from input xml file and csv"""
+        track = ""
         flag = False
         authors = []
 
-        match_affils = {}
+        match_affiliations = {}
         with open("../matches.csv") as f_obj:
             reader = csv.DictReader(f_obj, delimiter=':')
             for line in reader:
                 key = line["old_affiliation"]
                 value = line["new_affiliation"]
-                match_affils[key] = value
+                match_affiliations[key] = value
 
         child_count = 0
 
@@ -50,31 +53,39 @@ class GetterAbstract(object):
 
                 if root[i][j].tag == "PrimaryAuthor":
                     # приведение разных affiliations к одному стандарту
-                    affiliation = bring_affil_to_the_same(str(root[i][j][3].text), match_affils)
-                    primary_author = Person(str(root[i][j][0].text), str(root[i][j][1].text), str(root[i][j][2].text),
-                                            affiliation, True)
+                    affiliation = bring_affiliations_to_the_same(str(root[i][j][3].text),
+                                                                 match_affiliations)
+                    primary_author = Person(str(root[i][j][0].text),
+                                            str(root[i][j][1].text),
+                                            str(root[i][j][2].text),
+                                            affiliation,
+                                            True)
                     authors.append(primary_author)
 
                 if root[i][j].tag == "Co-Author":
                     # приведение разных affilations к одному стандарту
-                    affiliation = bring_affil_to_the_same(str(root[i][j][3].text), match_affils)
-                    co_author = Person(str(root[i][j][0].text), str(root[i][j][1].text), str(root[i][j][2].text),
-                                       affiliation, False)
+                    affiliation = bring_affiliations_to_the_same(str(root[i][j][3].text),
+                                                                 match_affiliations)
+                    co_author = Person(str(root[i][j][0].text),
+                                       str(root[i][j][1].text),
+                                       str(root[i][j][2].text),
+                                       affiliation,
+                                       False)
                     authors.append(co_author)
 
                 if root[i][j].tag == "Track" and not flag:
-                    tracky = root[i][j].text
+                    track = root[i][j].text
                     flag = True
 
-                """if root[i][j].tag == "Speaker":
-                    speaker = repr(root[i][j][0].text) + repr(root[i][j][1].text) + repr(root[i][j][2].text)
-                    + repr(root[i][j][3].text)
+                # if root[i][j].tag == "Speaker":
+                #    speaker = repr(root[i][j][0].text) +
+                #    repr(root[i][j][1].text) +
+                #    repr(root[i][j][2].text) +
+                #    repr(root[i][j][3].text)
 
-                if root[i][j].tag == "ContributionType":
-                    contributionType = root[i][j].text"""
+                # if root[i][j].tag == "ContributionType":
+                #    contributionType = root[i][j].text
 
-        abstract = abstract_class.Abstract(title, content, authors, tracky)
-        # abstract.speaker = speaker
-        # abstract.contributionType = contributionType
+        abstract = abstract_class.Abstract(title, content, authors, track)
 
         return abstract
