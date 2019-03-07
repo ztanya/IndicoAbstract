@@ -1,6 +1,6 @@
 class Abstract(object):
 
-    def __init_(self, title, content, authors, track):
+    def __init__(self, title, content, authors, track):
         self.title = title
         self.content = content
         self.authors = authors
