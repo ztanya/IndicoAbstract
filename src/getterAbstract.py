@@ -14,7 +14,7 @@ class getterAbstract(object):
         authors = []
 
         match_affils = {}
-        with open("matches.csv") as f_obj:
+        with open("../matches.csv") as f_obj:
             reader = csv.DictReader(f_obj, delimiter=':')
             for line in reader:
                 key = line["old_affiliation"]

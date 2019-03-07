@@ -22,7 +22,7 @@ from collections import defaultdict
 
 if __name__ == "__main__":
 
-    conferenceInfoXml_filename = "conference_info_boa.xml"
+    conferenceInfoXml_filename = "../xml_sources/conference_info_boa.xml"
 
     tree_conference = ET.parse(conferenceInfoXml_filename)
     root_conference = tree_conference.getroot()
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     desc_en = getter_conference.getConference(root_conference).desc_en
     desc_ru = getter_conference.getConference(root_conference).desc_ru
 
-    doc = DocxTemplate("tpl.docx")
+    doc = DocxTemplate("../tpl.docx")
     context = {'title_name_en': name_en.upper(),
                'title_name_ru': name_ru.upper(),
                'name_en': name_en,
@@ -55,13 +55,13 @@ if __name__ == "__main__":
                'desc_ru': desc_ru}
 
     doc.render(context)
-    doc.save("generated_doc_boa.docx")
+    doc.save("../doc_results/generated_doc_boa.docx")
 
-    document = Document("generated_doc_boa.docx")
+    document = Document("../doc_results/generated_doc_boa.docx")
     styles = document.styles
     count = 0
 
-    abstractsXml_filename = "Abstracts_boa.xml"
+    abstractsXml_filename = "../xml_sources/Abstracts_boa.xml"
 
     tree_abstracts = ET.parse(abstractsXml_filename)
     root_abstracts = tree_abstracts.getroot()
@@ -194,5 +194,5 @@ if __name__ == "__main__":
 
             document.add_page_break()
 
-document.save("generated_final_boa.docx")
-print("Документ успешно сгенерирован (generated_final_boa.docx)")
+document.save("../doc_results/generated_final_boa.docx")
+print("Документ успешно сгенерирован (../doc_results/generated_final_boa.docx)")
