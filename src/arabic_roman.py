@@ -1,4 +1,7 @@
+"""Module for converting arabic numbers to roman."""
+
 def arabic_roman(nums):
+    """Converts arabic number to roman."""
     def addition(num, length):
         def filling(length):
             zero = ['', '']

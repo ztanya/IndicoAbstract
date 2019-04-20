@@ -1,4 +1,9 @@
+"""Module for storing information about Conference class."""
+
 class Conference:
+    """Stores information about name, number, date and year,
+    descriprion and additional information about the conference.
+    """
 
     def __init__(self,
                  name_en,
@@ -11,6 +16,7 @@ class Conference:
                  date_ru,
                  desc_en,
                  desc_ru):
+        """Class constructor."""
         self.name_en = name_en
         self.name_ru = name_ru
         self.add_info_en = add_info_en

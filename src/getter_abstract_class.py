@@ -1,4 +1,4 @@
-"""module for getting abstract from input xml file"""
+"""Module for getting abstract from input xml file."""
 from __future__ import print_function
 import csv
 import abstract_class
@@ -6,27 +6,30 @@ from person_class import Person
 
 
 def bring_affiliations_to_the_same(input_affiliation, key_list):
-    """function to match current affiliations with affiliations from CSV file"""
+    """Function to match current affiliations with affiliations from CSV file.
+    Returns replaced affiliation if it is in CSV file and otherwise
+    returns input affiliation."""
     input_affiliation = input_affiliation.strip().rstrip()
     if input_affiliation in key_list.keys():
         new_affiliation = str(key_list.get(input_affiliation))
         new_affiliation = new_affiliation.replace("['", "")
         new_affiliation = new_affiliation.replace("\\n']", "")
-        print("Была заменена следующая организация: ")
+        print("The following affiliation has been replaced: ")
         print(input_affiliation + " на " + new_affiliation + "\n")
         return new_affiliation
-    print("!!!Организации " + input_affiliation + " нет в списке стандартов! "
-          + "Проверьте правильность написания." +
-          "В сгенерированном документе сохранен текущий вариант названия организации." + "\n")
+    print("!!!The affiliation " + input_affiliation + " is not in the list of standards! "
+          + "Check that the affiliation is written correctly." +
+          "The current version of the affiliation is saved in the generated document." + "\n")
     return input_affiliation
 
 
 class GetterAbstract:
-    """class for getting abstract from input xml file and csv"""
+    """Class for getting abstract from input XML file and CSV."""
 
     @staticmethod
     def get_abstract(root, i):
-        """method for getting abstract from input xml file and csv"""
+        """Method for getting abstract from input XML file and CSV.
+        Returns object of Abstracts class."""
         track = ""
         flag = False
         authors = []

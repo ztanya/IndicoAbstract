@@ -1,3 +1,5 @@
+"""Module for generating Book of abstracts."""
+
 from __future__ import unicode_literals
 import string
 import xml.etree.cElementTree as ET
@@ -12,9 +14,37 @@ import abstract_class
 
 
 class IndicoAbstractGenerator:
+    """The main class for generation of the book."""
 
     def generate_doc(conferenceinfo_xmlfilename, abstracts_xmlfilename,
                      doctpl_filename, finaldocument_filename):
+        """The main function for generation of the book.
+        Creates the final generated document.
+        Includes the following steps:
+        1. Parsing conference information XML file.
+        2. Creating and rendering DOCX file from template for generation of
+        two first book's pages.
+        3. Saving the DOCX file as a temporary.
+        4. Specifying about using styles in the generated document is the same as in the template.
+        5. Parsing abstracts information XML file.
+        6. Adding Abstracts class objects to list.
+        7. Creating a list of all Tracks, removing duplicates.
+        8. Grouping abstracts list by Tracks.
+        9. Adding presentation themes (Tracks) to the final document.
+        10. Creating an ordered set of all affiliations.
+        11. Adding titles of the abstracts.
+        12. Adding the abstracts author names with indexes of e-mails and
+        indexes of affiliations to the final document.
+        13. Adding author e-mails and affiliations to the final document.
+        14. Saving the final generated document.
+        15. Printing message about success generation and path to the generated document.
+
+        conferenceinfo_xmlfilename - input path of XML file about information of the conference.
+        abstracts_xmlfilename - input path of XML file about information of the abstracts.
+        doctpl_filename - input path of DOCX template.
+        finaldocument_filename - input path of DOCX generated document.
+
+        """
 
         tree_conference = ET.parse(conferenceinfo_xmlfilename)
         root_conference = tree_conference.getroot()
@@ -22,31 +52,23 @@ class IndicoAbstractGenerator:
 
         name_en = getter_conference.get_conference(root_conference).name_en
         name_ru = getter_conference.get_conference(root_conference).name_ru
-        add_info_en = getter_conference.get_conference(root_conference).add_info_en
-        add_info_ru = getter_conference.get_conference(root_conference).add_info_ru
         conf_number = getter_conference.get_conference(root_conference).number
-        roman_number = arabic_roman.arabic_roman(conf_number)
-        year = getter_conference.get_conference(root_conference).year
-        date_en = getter_conference.get_conference(root_conference).date_en
-        date_ru = getter_conference.get_conference(root_conference).date_ru
-        desc_en = getter_conference.get_conference(root_conference).desc_en
-        desc_ru = getter_conference.get_conference(root_conference).desc_ru
 
-        doc = DocxTemplate(doctpl_filename)
         context = {'title_name_en': name_en.upper(),
                    'title_name_ru': name_ru.upper(),
                    'name_en': name_en,
                    'name_ru': name_ru,
-                   'add_info_en': add_info_en,
-                   'add_info_ru': add_info_ru,
-                   'conf_number': conf_number,
-                   'roman_number': roman_number,
-                   'year': year,
-                   'date_en': date_en,
-                   'date_ru': date_ru,
-                   'desc_en': desc_en,
-                   'desc_ru': desc_ru}
+                   'add_info_en': getter_conference.get_conference(root_conference).add_info_en,
+                   'add_info_ru': getter_conference.get_conference(root_conference).add_info_ru,
+                   'conf_number': getter_conference.get_conference(root_conference).number,
+                   'roman_number': arabic_roman.arabic_roman(conf_number),
+                   'year': getter_conference.get_conference(root_conference).year,
+                   'date_en': getter_conference.get_conference(root_conference).date_en,
+                   'date_ru': getter_conference.get_conference(root_conference).date_ru,
+                   'desc_en': getter_conference.get_conference(root_conference).desc_en,
+                   'desc_ru': getter_conference.get_conference(root_conference).desc_ru}
 
+        doc = DocxTemplate(doctpl_filename)
         doc.render(context)
         doc.save("../doc_results/generated_doc_tmp.docx")
 
@@ -83,6 +105,7 @@ class IndicoAbstractGenerator:
                     dict_abstracts_by_groups[track].append(abstract)
 
         def by_name_key(person):
+            """Returns person's first name with a capital."""
             return person.first_name.capitalize()
 
         for section in dict_abstracts_by_groups.keys():
