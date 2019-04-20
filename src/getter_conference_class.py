@@ -1,10 +1,14 @@
+"""Module for getting information about the conference from input XML file."""
+
 import conference_class
 
-
 class GetterConference:
+    """Gets information about the conference."""
 
     @staticmethod
     def get_conference(root):
+        """Gets information about the conference from XML file's root.
+        Returns object of Conference class."""
 
         name_en = root[0].text
         name_ru = root[1].text
