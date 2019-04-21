@@ -1,0 +1,7 @@
+indicoabstractgenerator\_class module
+=====================================
+
+.. automodule:: indicoabstractgenerator_class
+    :members:
+    :undoc-members:
+    :show-inheritance:

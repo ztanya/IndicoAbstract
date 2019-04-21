@@ -1,0 +1,7 @@
+getter\_abstract\_class module
+==============================
+
+.. automodule:: getter_abstract_class
+    :members:
+    :undoc-members:
+    :show-inheritance:

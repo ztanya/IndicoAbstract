@@ -1,0 +1,7 @@
+arabic\_roman module
+====================
+
+.. automodule:: arabic_roman
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,7 @@
+getter\_conference\_class module
+================================
+
+.. automodule:: getter_conference_class
+    :members:
+    :undoc-members:
+    :show-inheritance:
