@@ -69,6 +69,32 @@ Module for generating Book of abstracts.
 `class indicoabstractgenerator_class.IndicoAbstractGenerator`
 
  The main class for generation of the book.
+ 
+`generate_doc(abstracts_xmlfilename, doctpl_filename, finaldocument_filename)`
+
+ The main function for generation of the book. Creates the final
+ generated document. Includes the following steps:
+ 1. Parsing conference information XML file.
+ 2. Creating and rendering DOCX file from template for generation of two first book's pages.
+ 3. Saving the DOCX file as a temporary.
+ 4. Specifying about using styles in the generated document is the same as in the template.
+ 5. Parsing abstracts information XML file.
+ 6. Adding Abstracts class objects to list.
+ 7. Creating a list of all Tracks,removing duplicates.
+ 8. Grouping abstracts list by Tracks.
+ 9. Adding presentation themes (Tracks) to the final document.
+ 10. Creating an ordered set of all affiliations.
+ 11. Adding titles of the abstracts.
+ 12. Adding the abstracts author names with indexes of e-mails and indexes of affiliations to the final
+ document.
+ 13. Adding author e-mails and affiliations to the final document.
+ 14. Saving the final generated document.
+ 15. Printing message about success generation and path to the generated document.
+
+* `conferenceinfo_xmlfilename` - input path of XML file about information of the conference.
+* `abstracts_xmlfilename` - input path of XML file about information of the abstracts.
+* `doctpl_filename` - input path of DOCX template.
+* `finaldocument_filename` - input path of DOCX generated document.
 
 
 
