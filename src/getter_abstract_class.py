@@ -31,6 +31,8 @@ class GetterAbstract:
         """Method for getting abstract from input XML file and CSV.
         Returns object of Abstracts class."""
         track = ""
+        title = ""
+        content = ""
         flag = False
         authors = []
 
