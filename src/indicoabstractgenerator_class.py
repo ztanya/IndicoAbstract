@@ -7,6 +7,7 @@ from collections import defaultdict
 import lxml.etree as LXML_ET
 from docxtpl import DocxTemplate
 from docx import Document
+import readline
 import getter_conference_class
 import getter_abstract_class
 import arabic_roman
@@ -83,7 +84,7 @@ class IndicoAbstractGenerator:
 
         abstracts_list = []
 
-        for i in range(1, int(count_abstracts)):
+        for i in range(1, int(count_abstracts)+1):
             getted_ab = getter_abstracts.get_abstract(root_abstracts, i)
             abstract = abstract_class.Abstract(getted_ab.title,
                                                getted_ab.content,
@@ -147,12 +148,16 @@ class IndicoAbstractGenerator:
                             if all_authors[i].affiliation == elem:
                                 aff_index = index + 1
                                 break
-                        new_paragraph.add_run(str(aff_index) + ",").font.superscript = True
+                        new_paragraph.add_run(str(aff_index)).font.superscript = True
                     if all_authors[i].is_primary_author:
                         if all_authors[i].email != "":
-                            new_paragraph.add_run(
-                                string.ascii_lowercase[email_index]).font.superscript = True
-                            email_index += 1
+                            if len(all_affiliations_nonrepeat) > 1:
+                                new_paragraph.add_run(","+
+                                    string.ascii_lowercase[email_index]).font.superscript = True
+                                email_index += 1
+                            else:
+                                new_paragraph.add_run(string.ascii_lowercase[email_index]).font.superscript = True
+                                email_index += 1
 
                 # пишем affiliations
                 aff_index = -1
@@ -185,15 +190,16 @@ class IndicoAbstractGenerator:
                             if count_primary_authors > 0:
                                 if i > 0:
                                     new_paragraph.add_run(", ")
-                            new_paragraph.add_run(
-                                string.ascii_lowercase[email_index]).font.superscript = True
+                            new_paragraph.add_run(string.ascii_lowercase[email_index]).font.superscript = True
                             email_index += 1
                             new_paragraph.add_run(all_authors[i].email)
                             count_primary_authors += 1
 
-                new_paragraph = document.add_paragraph(style=styles["GRID_Abstract"])
-                new_paragraph.add_run(abstract.content[1:-1].capitalize())
-                document.add_paragraph("")
+                #  пишем содержание
+                for x in abstract.content.split(chr(10)):
+                    if x != ' ' and x != '':
+                        new_paragraph = document.add_paragraph(style=styles["GRID_Abstract"])
+                        new_paragraph.add_run(x.replace(chr(9), ''))
 
                 document.add_page_break()
 
