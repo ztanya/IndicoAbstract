@@ -1,7 +1,0 @@
-conference\_class module
-========================
-
-.. automodule:: conference_class
-    :members:
-    :undoc-members:
-    :show-inheritance:

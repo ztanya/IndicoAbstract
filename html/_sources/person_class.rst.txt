@@ -1,7 +1,0 @@
-person\_class module
-====================
-
-.. automodule:: person_class
-    :members:
-    :undoc-members:
-    :show-inheritance:

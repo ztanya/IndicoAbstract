@@ -1,7 +1,0 @@
-abstract\_class module
-======================
-
-.. automodule:: abstract_class
-    :members:
-    :undoc-members:
-    :show-inheritance:
