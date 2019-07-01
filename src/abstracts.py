@@ -10,8 +10,9 @@ import lxml.etree as LXML_ET
 class Abstract:
     """Stores information about title, content, authors and track of the abstract."""
 
-    def __init__(self, title, content, authors, track):
+    def __init__(self, abstract_id, title, content, authors, track):
         """Class constructor."""
+        self.abstract_id = abstract_id
         self.title = title
         self.content = content
         self.authors = authors
@@ -56,6 +57,7 @@ def parse_abstracts_xml(abstracts_xmlfilename, csv_file):
     doc_abstracts = LXML_ET.parse(abstracts_xmlfilename)
     count_abstracts = doc_abstracts.xpath('count(//abstract)')
 
+    abstract_id = 0
     track = ""
     title = ""
     content = ""
@@ -69,6 +71,8 @@ def parse_abstracts_xml(abstracts_xmlfilename, csv_file):
     print("1. Parsing all abstracts from XML")
     for i in range(1, int(count_abstracts) + 1):
         for child in root_abstracts[i]:
+            if child.tag == "Id":
+                abstract_id = int(child.text.strip())
             if child.tag == "Title":
                 title = child.text.strip()
                 continue
@@ -100,7 +104,7 @@ def parse_abstracts_xml(abstracts_xmlfilename, csv_file):
                 flag = True
                 continue
 
-        abstract = Abstract(title, content, authors, track)
+        abstract = Abstract(abstract_id, title, content, authors, track)
         abstracts_list.append(abstract)
         authors = []
         flag = False
@@ -165,6 +169,6 @@ def check_abstracts_consistency(abstracts):
         if 'NONE' in languages_set:
             languages_set.remove('NONE')
         if len(languages_set) != 1:
-            print("More than one language is used in abstract: " + abstract.title)
+            print("More than one language is used in abstract with Id: " + str(abstract.abstract_id))
             from pprint import pprint as pp
             pp(languages)
