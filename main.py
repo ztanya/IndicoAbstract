@@ -9,7 +9,7 @@ from os import path
 from pprint import pprint
 
 from src.conference import parse_conference_xml
-from src.abstracts import parse_abstracts_xml
+from src.abstracts import parse_abstracts_xml, check_abstracts_consistency 
 from src.generator import generate_book
 
 if __name__ == "__main__":
@@ -24,6 +24,8 @@ if __name__ == "__main__":
 
     conference = parse_conference_xml(CONFERENCEINFO_XMLFILENAME)
     abstracts = parse_abstracts_xml(ABSTRACTS_XMLFILENAME, CSV_FILENAME)
+
+    check_abstracts_consistency(abstracts)
 
     generate_book(conference, abstracts, DOCTPL_FILENAME, FINALDOCUMENT_FILENAME)
 

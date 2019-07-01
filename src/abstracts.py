@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function
 import csv
-import xml.etree.cElementTree as ET
+import unicodedata as ud
 
+import xml.etree.cElementTree as ET
 import lxml.etree as LXML_ET
 
 
@@ -42,8 +43,13 @@ def create_dict_standarts(csv_file):
 
 
 def parse_abstracts_xml(abstracts_xmlfilename, csv_file):
-    """Method for getting abstract from input XML file and CSV.
-    Returns list of all abstracts.
+    """ Method for getting structured list containing all the abstracts from XML.
+    Every abstract in the list is an object of Abstract class.
+    It contains 4 main components:
+    1. Track of abstract
+    2. Title
+    3. List of authors. Every author is an object of Person class
+    4. Abstract itself (content)
     """
     tree_abstracts = ET.parse(abstracts_xmlfilename)
     root_abstracts = tree_abstracts.getroot()
@@ -64,11 +70,11 @@ def parse_abstracts_xml(abstracts_xmlfilename, csv_file):
     for i in range(1, int(count_abstracts) + 1):
         for child in root_abstracts[i]:
             if child.tag == "Title":
-                title = child.text
+                title = child.text.strip()
                 continue
 
             if child.tag == "Content":
-                content = child.text
+                content = child.text.strip()
                 continue
 
             if child.tag == "PrimaryAuthor" or child.tag == "Co-Author":
@@ -81,11 +87,11 @@ def parse_abstracts_xml(abstracts_xmlfilename, csv_file):
                     unknown_affiliations.append(affiliation)
 
 
-                primary_author = Person(str(child[0].text),
-                                        str(child[1].text),
-                                        str(child[2].text),
-                                        affiliation,
-                                        True if child.tag == "PrimaryAuthor" else False)
+                primary_author = Person(first_name=str(child[0].text),
+                                        family_name=str(child[1].text),
+                                        email=str(child[2].text),
+                                        affiliation=affiliation,
+                                        is_primary_author=True if child.tag == "PrimaryAuthor" else False)
                 authors.append(primary_author)
                 continue
 
@@ -107,3 +113,59 @@ def parse_abstracts_xml(abstracts_xmlfilename, csv_file):
     print("==============================================")
 
     return abstracts_list
+
+def get_language_of_string(input_string):
+    # Threshold to determine language
+    # If the ratio of one symbols required to define language.
+    THRESHOLD = 0.6
+
+    alphabet = {
+        'LATIN': 0,
+        'CYRILLIC': 0
+    }
+
+    for symbol in input_string:
+        try:
+            if 'LATIN' in ud.name(symbol):
+                alphabet['LATIN'] += 1
+            if 'CYRILLIC' in ud.name(symbol):
+                alphabet['CYRILLIC'] += 1
+        except ValueError:
+            # If it is TAB
+            if ord(symbol) == 9: 
+                continue
+            # If it is New Line
+            if ord(symbol) == 10: 
+                continue
+            print(str(symbol) + "symbol not found. Code: " + str(ord(symbol)))
+
+    if alphabet['LATIN'] == 0 and alphabet['CYRILLIC'] == 0:
+        return "NONE"
+
+    if alphabet['LATIN'] / (alphabet['CYRILLIC'] + alphabet['LATIN'])> THRESHOLD:
+        return "LATIN"
+
+    if alphabet['CYRILLIC'] / (alphabet['CYRILLIC'] + alphabet['LATIN'])> THRESHOLD:
+        return "CYRILLIC"
+
+    return "MIXED"
+
+def check_abstracts_consistency(abstracts):
+    for abstract in abstracts:
+
+        # Check language consistency
+        languages = {}
+        languages['Title'] = get_language_of_string(abstract.title)
+        languages['Content'] = get_language_of_string(abstract.content)
+        for i in range(len(abstract.authors)):
+            languages['Author' + str(i) + "_Name"] = get_language_of_string(abstract.authors[i].first_name + abstract.authors[i].family_name)
+            languages['Author' + str(i) + "_Affiliation"] = get_language_of_string(abstract.authors[i].affiliation)
+
+        languages_set = set(languages.values())
+        if 'NONE' in languages_set:
+            languages_set.remove('NONE')
+        if len(languages_set) != 1:
+            print("More than one language is used in abstract: " + abstract.title)
+            from pprint import pprint as pp
+            pp(languages)
+
