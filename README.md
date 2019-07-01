@@ -16,6 +16,8 @@ Generator of Indico's Book of Abstract.
 
 `DOCTPL_FILENAME`
 
+`CSV_FILENAME`
+
 `FINALDOCUMENT_FILENAME`
 
 ## Then run the file again
