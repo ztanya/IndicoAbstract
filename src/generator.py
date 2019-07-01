@@ -183,4 +183,4 @@ def generate_book(conference_obj, list_abstracts, doctpl_filename, finaldocument
             document.add_page_break()
 
     document.save(finaldocument_filename)
-    print("The document has been successfully generated to the path: " + path.normpath(finaldocument_filename) + ".")
+    print("\n"+"The document has been successfully generated to the path: " + path.normpath(finaldocument_filename) + ".")

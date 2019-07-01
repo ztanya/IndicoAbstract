@@ -114,7 +114,7 @@ def parse_abstracts_xml(abstracts_xmlfilename, csv_file):
     print("2. The following affiliations are unknown. Please add them to CSV file with standards.")
     for affiliation in unknown_affiliations:
         print(affiliation)
-    print("==============================================")
+    print("=======================================================")
 
     return abstracts_list
 
@@ -170,5 +170,18 @@ def check_abstracts_consistency(abstracts):
             languages_set.remove('NONE')
         if len(languages_set) != 1:
             print("More than one language is used in abstract with Id: " + str(abstract.abstract_id))
+            print("Email to contact Primary author: ", [author.email for author in abstract.authors if author.is_primary_author])
             from pprint import pprint as pp
             pp(languages)
+            print('_______________________________________________________')
+    print("=======================================================")
+
+def check_abstract_count_symbols(abstracts):
+    for abstract in abstracts:
+
+        # Check count of symbols in abstract's content
+        if len(abstract.content) >= 1700 and len(abstract.content) < 2200:
+            print('WARNING: too many symbols in content of abstract with Id= ', str(abstract.abstract_id), ': ', len(abstract.content), ' symbols')
+        elif len(abstract.content) >= 2200:
+            print('FATAL: extremely many symbols in content of abstract with Id= ', str(abstract.abstract_id), ': ', len(abstract.content), ' symbols')
+
