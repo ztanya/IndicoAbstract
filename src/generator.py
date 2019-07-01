@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import os
 import string
-import sys
 from collections import defaultdict
 from os import path
 
@@ -185,4 +183,4 @@ def generate_book(conference_obj, list_abstracts, doctpl_filename, finaldocument
             document.add_page_break()
 
     document.save(finaldocument_filename)
-    print("The document has been successfully generated to the path: " + os.path.normpath(finaldocument_filename) + ".")
+    print("The document has been successfully generated to the path: " + path.normpath(finaldocument_filename) + ".")

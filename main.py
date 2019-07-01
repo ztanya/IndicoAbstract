@@ -3,13 +3,10 @@
 DOCX template path and final document path.
 Includes a call to the final document generation function.
 """
-import os
-import sys
 from os import path
-from pprint import pprint
 
 from src.conference import parse_conference_xml
-from src.abstracts import parse_abstracts_xml, check_abstracts_consistency 
+from src.abstracts import parse_abstracts_xml, check_abstracts_consistency
 from src.generator import generate_book
 
 if __name__ == "__main__":

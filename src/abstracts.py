@@ -65,7 +65,7 @@ def parse_abstracts_xml(abstracts_xmlfilename, csv_file):
     unknown_affiliations = []
 
     affiliation_standarts = create_dict_standarts(csv_file)
-    
+
     print("1. Parsing all abstracts from XML")
     for i in range(1, int(count_abstracts) + 1):
         for child in root_abstracts[i]:
@@ -132,10 +132,10 @@ def get_language_of_string(input_string):
                 alphabet['CYRILLIC'] += 1
         except ValueError:
             # If it is TAB
-            if ord(symbol) == 9: 
+            if ord(symbol) == 9:
                 continue
             # If it is New Line
-            if ord(symbol) == 10: 
+            if ord(symbol) == 10:
                 continue
             print(str(symbol) + "symbol not found. Code: " + str(ord(symbol)))
 
@@ -168,4 +168,3 @@ def check_abstracts_consistency(abstracts):
             print("More than one language is used in abstract: " + abstract.title)
             from pprint import pprint as pp
             pp(languages)
-
