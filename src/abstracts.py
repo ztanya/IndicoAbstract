@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import print_function
 import csv
 import xml.etree.cElementTree as ET
@@ -28,24 +29,6 @@ class Person:
         self.affiliation = affiliation
         self.is_primary_author = is_primary_author
 
-
-def bring_affiliations_to_the_same(input_affiliation, key_list):
-    """Function to match current affiliations with affiliations from CSV file.
-    Returns replaced affiliation if it is in CSV file and otherwise
-    returns input affiliation."""
-    input_affiliation = input_affiliation.strip().rstrip()
-    if input_affiliation in key_list.keys():
-        new_affiliation = str(key_list.get(input_affiliation))
-        new_affiliation = new_affiliation.replace("['", "").replace("\\n']", "")
-        print("The following affiliation has been replaced: ")
-        print(input_affiliation + " на " + new_affiliation + "\n")
-        return new_affiliation
-    print("---The affiliation \"" + input_affiliation + "\" is not in the list of standards! "
-          + "Check that the affiliation is written correctly." +
-          "The current version of the affiliation is saved in the generated document." + "\n")
-    return input_affiliation
-
-
 def create_dict_standarts(csv_file):
     """Creates a dictionary from CSV file."""
     standarts = {}
@@ -73,9 +56,11 @@ def parse_abstracts_xml(abstracts_xmlfilename, csv_file):
     flag = False
     authors = []
     abstracts_list = []
+    unknown_affiliations = []
 
-    standarts = create_dict_standarts(csv_file)
-
+    affiliation_standarts = create_dict_standarts(csv_file)
+    
+    print("1. Parsing all abstracts from XML")
     for i in range(1, int(count_abstracts) + 1):
         for child in root_abstracts[i]:
             if child.tag == "Title":
@@ -86,28 +71,22 @@ def parse_abstracts_xml(abstracts_xmlfilename, csv_file):
                 content = child.text
                 continue
 
-            if child.tag == "PrimaryAuthor":
-                # bringing different affiliations to the same standard
-                affiliation = bring_affiliations_to_the_same(str(child[3].text),
-                                                             standarts)
+            if child.tag == "PrimaryAuthor" or child.tag == "Co-Author":
+                # Bringing different affiliations to the same standard
+                affiliation = str(child[3].text).strip()
+                # If affiliation is in standards - bring affiliation to standard
+                if affiliation in affiliation_standarts:
+                    affiliation = affiliation_standarts[affiliation]
+                else:
+                    unknown_affiliations.append(affiliation)
+
+
                 primary_author = Person(str(child[0].text),
                                         str(child[1].text),
                                         str(child[2].text),
                                         affiliation,
-                                        True)
+                                        True if child.tag == "PrimaryAuthor" else False)
                 authors.append(primary_author)
-                continue
-
-            if child.tag == "Co-Author":
-                # bringing different affiliations to the same standard
-                affiliation = bring_affiliations_to_the_same(str(child[3].text),
-                                                             standarts)
-                co_author = Person(str(child[0].text),
-                                   str(child[1].text),
-                                   str(child[2].text),
-                                   affiliation,
-                                   False)
-                authors.append(co_author)
                 continue
 
             if child.tag == "Track" and not flag:
@@ -119,5 +98,12 @@ def parse_abstracts_xml(abstracts_xmlfilename, csv_file):
         abstracts_list.append(abstract)
         authors = []
         flag = False
+
+    # Print unknown affiliations
+    unknown_affiliations = list(set(unknown_affiliations))
+    print("2. The following affiliations are unknown. Please add them to CSV file with standards.")
+    for affiliation in unknown_affiliations:
+        print(affiliation)
+    print("==============================================")
 
     return abstracts_list

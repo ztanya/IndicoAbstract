@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.7
+#!/usr/bin/env python3
 """Module for entering information about paths to conference and abstracts XML files,
 DOCX template path and final document path.
 Includes a call to the final document generation function.

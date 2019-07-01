@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 import os
@@ -11,16 +12,18 @@ from docx import Document
 from src.arabic_roman import arabic_roman
 
 
-def create_tracklist(list_abstracts):
+def get_list_of_tracks(list_abstracts):
     """Creates a list of all Tracks, removes duplicates."""
     tracks_list = []
+    # First collect all possible tracks with repetition
     for abstract in list_abstracts:
-        if abstract.track not in tracks_list:
-            tracks_list.append(abstract.track)
+        tracks_list.append(abstract.track)
+    # Remove repetitions
+    tracks_list = list(set(tracks_list))
     return tracks_list
 
 
-def group_abstracts_bytracks(list_abstracts, list_tracks):
+def get_abstracts_by_tracks(list_abstracts, list_tracks):
     """Breaks all list_abstracts into groups by Tracks in list_tracks."""
     dict_abstracts_by_groups = defaultdict(list)
     for abstract in list_abstracts:
@@ -82,8 +85,8 @@ def generate_book(conference_obj, list_abstracts, doctpl_filename, finaldocument
     document = Document(tmp_doc)
     styles = document.styles
 
-    tracks = create_tracklist(list_abstracts)
-    abstracts_by_tracks = group_abstracts_bytracks(list_abstracts, tracks)
+    tracks = get_list_of_tracks(list_abstracts)
+    abstracts_by_tracks = get_abstracts_by_tracks(list_abstracts, tracks)
 
     for section in abstracts_by_tracks.keys():
         # Writes sections in the final document
@@ -93,7 +96,7 @@ def generate_book(conference_obj, list_abstracts, doctpl_filename, finaldocument
             # new_paragraph.add_run(section[index+2:])
             new_paragraph.add_run(section)
             document.add_page_break()
-        for abstract in abstracts_by_tracks.get(section):
+        for abstract in abstracts_by_tracks[section]:
             all_affiliations = []
             all_authors = abstract.authors
             all_authors = sorted(all_authors, key=by_name_key)
