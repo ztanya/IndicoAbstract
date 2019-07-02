@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     # CHANGE TO THE REQUIRED VALUE
     CONFERENCEINFO_XMLFILENAME = 'xml_src/conference_info.xml'
-    ABSTRACTS_XMLFILENAME = 'xml_src/Abstracts.xml'
+    ABSTRACTS_XMLFILENAME = 'xml_src/Abstract_NEC2019.xml'
     DOCTPL_FILENAME = 'tpl.docx'
     CSV_FILENAME = 'matches.csv'
     FINALDOCUMENT_FILENAME = 'doc_results/book_of_abstracts.docx'
